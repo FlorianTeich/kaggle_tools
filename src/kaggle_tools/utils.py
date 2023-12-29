@@ -2,6 +2,7 @@ import os
 import zipfile
 import subprocess
 from pathlib import Path
+import pathlib
 
 
 def get_dataset(datasetname:str="spaceship-titanic"):
@@ -13,16 +14,16 @@ def get_dataset(datasetname:str="spaceship-titanic"):
     """
     if not(is_running_on_kaggle()):
         dp = get_data_path()
-        dp_input = dp + "input/"
-        zipfile_path = dp_input + datasetname + ".zip"
-        donezip_path = dp_input + "unzip.done"
-        Path(dp + "input/").mkdir(parents=True, exist_ok=True)
+        dp_input = dp / "input"
+        zipfile_path = dp_input / datasetname + ".zip"
+        donezip_path = dp_input / "unzip.done"
+        Path(dp_input).mkdir(parents=True, exist_ok=True)
         if not os.path.exists(zipfile_path):
             proc = subprocess.Popen(["kaggle competitions download -c " + datasetname + " -p " + dp_input], stdout=subprocess.PIPE, shell=True)
             proc.wait()
             if not os.path.exists(donezip_path):
                 with zipfile.ZipFile(zipfile_path, 'r') as zip_ref:
-                    zip_ref.extractall(dp_input + datasetname + "/")
+                    zip_ref.extractall(dp_input / datasetname + "/")
                 proc = subprocess.Popen(["touch " + donezip_path], stdout=subprocess.PIPE, shell=True)
                 proc.wait()
 
@@ -39,7 +40,7 @@ def is_running_on_kaggle() -> bool:
     return res == b"jupyter\n"
 
 
-def get_data_path() -> str:
+def get_data_path() -> Path:
     """
     Returns appropriate working directory depending on whether notebook is running on kaggle.com or locally
     
@@ -47,6 +48,6 @@ def get_data_path() -> str:
         str: The working directory
     """
     if is_running_on_kaggle():
-        return "/kaggle/"
+        return pathlib.Path("/kaggle")
     else:
-        return os.getcwd() + "/"
+        return pathlib.Path(os.getcwd())
