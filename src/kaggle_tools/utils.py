@@ -19,7 +19,7 @@ def get_dataset(datasetname:str="spaceship-titanic"):
         donezip_path = dp_input / "unzip.done"
         Path(dp_input).mkdir(parents=True, exist_ok=True)
         if not os.path.exists(zipfile_path):
-            proc = subprocess.Popen(["kaggle competitions download -c " + datasetname + " -p " + str(dp_input)], stdout=subprocess.PIPE, shell=True)
+            proc = subprocess.Popen(["kaggle", "competitions", "download", "-c", datasetname, "-p", str(dp_input)], stdout=subprocess.PIPE, shell=True)
             proc.wait()
             if not os.path.exists(donezip_path):
                 with zipfile.ZipFile(zipfile_path, 'r') as zip_ref:
