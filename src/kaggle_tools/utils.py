@@ -15,7 +15,7 @@ def get_dataset(datasetname:str="spaceship-titanic"):
     if not(is_running_on_kaggle()):
         dp = get_data_path()
         dp_input = dp / "input"
-        zipfile_path = dp_input / datasetname + ".zip"
+        zipfile_path = dp_input / (datasetname + ".zip")
         donezip_path = dp_input / "unzip.done"
         Path(dp_input).mkdir(parents=True, exist_ok=True)
         if not os.path.exists(zipfile_path):
@@ -23,7 +23,7 @@ def get_dataset(datasetname:str="spaceship-titanic"):
             proc.wait()
             if not os.path.exists(donezip_path):
                 with zipfile.ZipFile(zipfile_path, 'r') as zip_ref:
-                    zip_ref.extractall(dp_input / datasetname + "/")
+                    zip_ref.extractall(dp_input / (datasetname + "/"))
                 proc = subprocess.Popen(["touch " + donezip_path], stdout=subprocess.PIPE, shell=True)
                 proc.wait()
 
